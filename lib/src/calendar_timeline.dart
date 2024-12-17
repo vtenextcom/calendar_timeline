@@ -22,6 +22,8 @@ class CalendarTimeline extends StatefulWidget {
     required this.onDateSelected,
     this.selectableDayPredicate,
     this.leftMargin = 0,
+    this.yearListHeight = 40,
+    this.monthListHeight = 30,
     this.dayColor,
     this.activeDayColor,
     this.activeBackgroundDayColor,
@@ -64,12 +66,18 @@ class CalendarTimeline extends StatefulWidget {
           "Provided locale value doesn't exist",
         ),
         super(key: key);
+
   final DateTime initialDate;
   final DateTime firstDate;
   final DateTime lastDate;
   final SelectableDayPredicate? selectableDayPredicate;
   final OnDateSelected onDateSelected;
+
   final double leftMargin;
+
+  final double yearListHeight;
+  final double monthListHeight;
+
   final Color? dayColor;
   final Color? activeDayColor;
   final Color? activeBackgroundDayColor;
@@ -81,16 +89,21 @@ class CalendarTimeline extends StatefulWidget {
   final Color? dotColor;
 
   final Color? dayNameColor;
+
   final double height;
   final double width;
   final double shrinkHeight;
   final double shrinkWidth;
+
   final double fontSize;
   final double shrinkFontSize;
   final double dayNameFontSize;
   final double shrinkDayNameFontSize;
+
   final bool shrink;
+
   final String? locale;
+
   final List<DateTime>? eventDates;
 
   /// If true, it will show a separate row for the years.
@@ -369,7 +382,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
   Widget _buildYearList() {
     return SizedBox(
       key: const Key('ScrollableYearList'),
-      height: 40,
+      height: widget.yearListHeight,
       child: ScrollablePositionedList.builder(
         initialScrollIndex: _yearSelectedIndex ?? 0,
         initialAlignment: _scrollAlignment,
@@ -415,7 +428,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
   /// months in the calendar and the small version of [YearItem] for each year in between
   Widget _buildMonthList() {
     return SizedBox(
-      height: 30,
+      height: widget.monthListHeight,
       child: ScrollablePositionedList.builder(
         initialScrollIndex: _monthSelectedIndex ?? 0,
         initialAlignment: _scrollAlignment,
