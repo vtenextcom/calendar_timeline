@@ -8,6 +8,7 @@ class DayItem extends StatelessWidget {
     required this.shortName,
     required this.onTap,
     this.isSelected = false,
+    this.isWeekDay = false,
     this.dayColor,
     this.activeDayColor,
     this.activeDayBackgroundColor,
@@ -24,10 +25,13 @@ class DayItem extends StatelessWidget {
     required this.dayNameFontSize,
     required this.shrinkDayNameFontSize,
     this.shrink = false,
+    this.unselectedDayColor,
+    this.weekendDayColor,
   }) : super(key: key);
   final int dayNumber;
   final String shortName;
   final bool isSelected;
+  final bool isWeekDay;
   final Function onTap;
   final Color? dayColor;
   final Color? activeDayColor;
@@ -45,9 +49,11 @@ class DayItem extends StatelessWidget {
   final double dayNameFontSize;
   final double shrinkDayNameFontSize;
   final bool shrink;
+  final Color? unselectedDayColor;
+  final Color? weekendDayColor;
 
   GestureDetector _buildDay(BuildContext context) {
-    final textStyle = TextStyle(
+    var textStyle = TextStyle(
       color: available
           ? dayColor ?? Theme.of(context).colorScheme.secondary
           : dayColor?.withOpacity(0.5) ??
@@ -55,12 +61,33 @@ class DayItem extends StatelessWidget {
       fontSize: shrink ? shrinkFontSize : fontSize,
       height: 0.8,
     );
+
+    if (isWeekDay) {
+      textStyle = textStyle.copyWith(
+        color: weekendDayColor ?? textStyle.color,
+      );
+    }
+
     final selectedStyle = TextStyle(
       color: activeDayColor ?? Colors.white,
       fontSize: shrink ? shrinkFontSize : fontSize,
       fontWeight: FontWeight.bold,
       height: 0.8,
     );
+
+    var dayNameTextStyle = TextStyle(
+      color: isSelected
+          ? dayNameColor ?? activeDayColor ?? Colors.white
+          : unselectedDayColor ?? Colors.transparent,
+      fontWeight: FontWeight.bold,
+      fontSize: shrink ? shrinkDayNameFontSize : dayNameFontSize,
+    );
+
+    if (isWeekDay && !isSelected) {
+      dayNameTextStyle = dayNameTextStyle.copyWith(
+        color: weekendDayColor ?? dayNameTextStyle.color,
+      );
+    }
 
     return GestureDetector(
       onTap: available ? onTap as void Function()? : null,
@@ -75,9 +102,11 @@ class DayItem extends StatelessWidget {
         height: shrink ? shrinkHeight : height,
         width: shrink ? shrinkWidth : width,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: showDot
+              ? MainAxisAlignment.spaceBetween
+              : MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            if (isSelected)
+            if (isSelected && showDot)
               Column(
                 children: [
                   SizedBox(height: shrink ? 6 : 7),
@@ -86,7 +115,7 @@ class DayItem extends StatelessWidget {
                 ],
               )
             else
-              SizedBox(height: shrink ? 12 : 19),
+              SizedBox(height: showDot ? (shrink ? 12 : 19) : 0),
             Center(
               child: Text(
                 dayNumber.toString(),
@@ -97,13 +126,7 @@ class DayItem extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
                 shortName,
-                style: TextStyle(
-                  color: isSelected
-                      ? dayNameColor ?? activeDayColor ?? Colors.white
-                      : Colors.transparent,
-                  fontWeight: FontWeight.bold,
-                  fontSize: shrink ? shrinkDayNameFontSize : dayNameFontSize,
-                ),
+                style: dayNameTextStyle,
               ),
             ),
           ],

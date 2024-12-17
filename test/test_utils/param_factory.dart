@@ -17,8 +17,10 @@ abstract class ParamFactory {
 
   // Color
   static const Color activeColor = Colors.redAccent;
+  static const Color weekDayColor = Colors.yellow;
   static const Color textColor = Colors.blueAccent;
   static const Color dotColor = Colors.white;
+  static const Color unselectedColor = Colors.purple;
 
   // bool
   static const bool isNotSelected = false;

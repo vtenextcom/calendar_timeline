@@ -75,6 +75,7 @@ class _HomePageState extends State<HomePage> {
               onDateSelected: (date) => setState(() => _selectedDate = date),
               leftMargin: 12,
               monthColor: Colors.white70,
+              showDots: false,
               dayColor: Colors.teal[200],
               dayNameColor: const Color(0xFF333A47),
               activeDayColor: Colors.white,
@@ -82,6 +83,8 @@ class _HomePageState extends State<HomePage> {
               dotColor: Colors.white,
               selectableDayPredicate: (date) => date.day != 23,
               locale: 'en',
+              unselectedDayColor: Colors.white54,
+              weekendDayColor: Colors.red,
             ),
             const SizedBox(height: 20),
             Padding(

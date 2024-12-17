@@ -26,6 +26,7 @@ class CalendarTimeline extends StatefulWidget {
     this.activeDayColor,
     this.activeBackgroundDayColor,
     this.monthColor,
+    this.showDots = true,
     this.dotColor,
     this.dayNameColor,
     this.height = 80,
@@ -40,6 +41,8 @@ class CalendarTimeline extends StatefulWidget {
     this.locale,
     this.showYears = false,
     this.eventDates,
+    this.unselectedDayColor,
+    this.weekendDayColor,
   })  : assert(
           initialDate.difference(firstDate).inDays >= 0,
           'initialDate must be on or after firstDate',
@@ -71,7 +74,12 @@ class CalendarTimeline extends StatefulWidget {
   final Color? activeDayColor;
   final Color? activeBackgroundDayColor;
   final Color? monthColor;
+
+  /// If true, it will show the dots above the day box.
+  /// It defaults to true
+  final bool showDots;
   final Color? dotColor;
+
   final Color? dayNameColor;
   final double height;
   final double width;
@@ -88,6 +96,12 @@ class CalendarTimeline extends StatefulWidget {
   /// If true, it will show a separate row for the years.
   /// It defaults to false
   final bool showYears;
+
+  /// The color used for the name of unselected days
+  final Color? unselectedDayColor;
+
+  /// The color used for the name of the weekend days
+  final Color? weekendDayColor;
 
   @override
   State<CalendarTimeline> createState() => _CalendarTimelineState();
@@ -319,6 +333,8 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
       _monthSelectedIndex != null &&
       (index == _daySelectedIndex || index == _indexOfDay(_selectedDate));
 
+  bool _isWeekDay(DateTime date) => date.weekday == 6 || date.weekday == 7;
+
   int _indexOfDay(DateTime date) {
     try {
       return _days.indexOf(
@@ -474,6 +490,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
             children: <Widget>[
               DayItem(
                 isSelected: _isSelectedDay(index),
+                isWeekDay: _isWeekDay(currentDay),
                 dayNumber: currentDay.day,
                 shortName: shortName.length > 3
                     ? shortName.substring(0, 3)
@@ -484,7 +501,8 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
                 dayColor: widget.dayColor,
                 activeDayColor: widget.activeDayColor,
                 activeDayBackgroundColor: widget.activeBackgroundDayColor,
-                showDot: _eventDates?.contains(currentDay) ?? false,
+                showDot: widget.showDots &&
+                    (_eventDates?.contains(currentDay) ?? false),
                 dotColor: widget.dotColor,
                 dayNameColor: widget.dayNameColor,
                 height: widget.height,
@@ -496,6 +514,8 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
                 dayNameFontSize: widget.dayNameFontSize,
                 shrinkDayNameFontSize: widget.shrinkDayNameFontSize,
                 shrink: widget.shrink,
+                unselectedDayColor: widget.unselectedDayColor,
+                weekendDayColor: widget.weekendDayColor,
               ),
               if (index == _days.length - 1)
                 // Last element to take space to do scroll to left side
